@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo | Microsoft To Do Companion</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="hero">
+        <div class="container">
+            <div class="logo-mark">TD</div>
+            <h1>Todo</h1>
+            <p class="tagline">Windows-first Microsoft To Do access with clean Graph auth and compact command flow.</p>
+            <p class="description">List tasks fast, keep output scriptable, and stay inside the toy chest’s shared Microsoft auth pattern instead of rebuilding Graph sign-in from scratch.</p>
+            <div class="cta-buttons">
+                <a href="https://github.com/Midtown-Technology-Group/todo" class="btn btn-primary">View on GitHub</a>
+                <a href="#install" class="btn btn-secondary">Get Started</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="features">
+            <div class="container">
+                <h2>Features</h2>
+                <div class="feature-grid">
+                    <div class="feature">
+                        <div class="feature-icon">✅</div>
+                        <h3>Read-Only by Default</h3>
+                        <p>Starts with <code>Tasks.Read</code> so onboarding stays lightweight and tenant-friendly.</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">🔐</div>
+                        <h3>Shared Auth Story</h3>
+                        <p>Uses the same reusable Microsoft auth package as the rest of the Graph-backed toys.</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">🪟</div>
+                        <h3>WAM-First Windows Flow</h3>
+                        <p>Designed for a Windows shop first, with broker-backed sign-in and a tidy path to later portability.</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">📋</div>
+                        <h3>Task-Focused Commands</h3>
+                        <p>Use <code>list</code>, <code>add</code>, <code>complete</code>, and <code>remove</code> without extra ceremony.</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">🧾</div>
+                        <h3>JSON Output</h3>
+                        <p>Switch to machine-readable output for automation while keeping a human-friendly interactive mode.</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">🧱</div>
+                        <h3>Toy Chest Shape</h3>
+                        <p>Python package layout, PowerShell wrapper, tests, and documentation that match the newer dev toys.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="install" id="install">
+            <div class="container">
+                <h2>Installation</h2>
+                <div class="install-methods">
+                    <div class="install-method">
+                        <h3>Quick Start</h3>
+                        <div class="code-block"><code>py -3 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -e .[dev]
+.\.venv\Scripts\python.exe -m pip install -e ..\midtown-org-scan\microsoft-auth</code></div>
+                    </div>
+                    <div class="install-method">
+                        <h3>Auth Setup</h3>
+                        <div class="code-block"><code>$env:TODO_CLIENT_ID="your-client-id"
+$env:TODO_TENANT_ID="your-tenant-id"
+$env:TODO_SCOPES="Tasks.Read"
+$env:TODO_AUTH_MODE="wam"
+$env:TODO_ALLOW_BROKER="true"</code></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="usage">
+            <div class="container">
+                <h2>Daily Workflow</h2>
+                <div class="workflow">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <p>Authenticate once with the shared Microsoft auth setup.</p>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <p>Run <code>todo list</code> to scan tasks in interactive or JSON mode.</p>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <p>Opt into <code>Tasks.ReadWrite</code> later only if you want mutating commands.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="tech-stack">
+            <div class="container">
+                <h2>Built With</h2>
+                <div class="stack-list">
+                    <a href="https://www.python.org/" class="stack-item">Python</a>
+                    <a href="https://typer.tiangolo.com/" class="stack-item">Typer</a>
+                    <a href="https://learn.microsoft.com/graph/" class="stack-item">Microsoft Graph</a>
+                    <a href="https://github.com/Midtown-Technology-Group/microsoft-auth" class="stack-item">MTG Microsoft Auth</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Built by <a href="https://midtowntg.com">Midtown Technology Group</a></p>
+            <p>Windows-first now, portable later.</p>
+            <div class="footer-links">
+                <a href="https://github.com/Midtown-Technology-Group/todo">GitHub</a>
+                <a href="https://github.com/Midtown-Technology-Group/todo/issues">Issues</a>
+                <a href="https://github.com/Midtown-Technology-Group/todo/blob/main/README.md">Readme</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

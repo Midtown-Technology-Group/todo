@@ -2,6 +2,8 @@
 
 Windows-first Python tool for Microsoft To Do.
 
+Project site: <https://midtown-technology-group.github.io/todo/>
+
 ## Setup
 
 ```powershell

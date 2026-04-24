@@ -18,7 +18,8 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Midtown-Technology-Group/todo"
+Homepage = "https://midtown-technology-group.github.io/todo/"
+Documentation = "https://midtown-technology-group.github.io/todo/"
 Repository = "https://github.com/Midtown-Technology-Group/todo"
 Issues = "https://github.com/Midtown-Technology-Group/todo/issues"
 
