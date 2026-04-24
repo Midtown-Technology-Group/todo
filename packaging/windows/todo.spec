@@ -7,7 +7,7 @@ datas = collect_data_files("mtg_microsoft_auth")
 hiddenimports = collect_submodules("mtg_microsoft_auth")
 
 a = Analysis(
-    ["src/todo/__main__.py"],
+    [str(project_root / "src" / "todo" / "__main__.py")],
     pathex=[str(project_root / "src")],
     binaries=[],
     datas=datas,
