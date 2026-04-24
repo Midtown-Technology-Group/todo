@@ -7,7 +7,7 @@ name = "todo"
 version = "0.1.0"
 description = "Windows-first tool for Microsoft To Do"
 readme = "README.md"
-license = {text = "MIT"}
+license = {text = "GPL-3.0-or-later"}
 requires-python = ">=3.10"
 authors = [{name = "Thomas Bray", email = "thomas.bray@midtown.net"}]
 dependencies = [

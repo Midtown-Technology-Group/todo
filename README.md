@@ -33,3 +33,10 @@ Set these environment variables before running the CLI:
 .\invoke.ps1 complete 123
 .\invoke.ps1 remove item --completed --all
 ```
+
+## License
+
+GPL-3.0-or-later.
+
+This repo also includes inherited material derived from `mehmetseckin/todo-cli`
+under MIT; see `NOTICE`.
