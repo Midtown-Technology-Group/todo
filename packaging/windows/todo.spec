@@ -2,7 +2,7 @@ from pathlib import Path
 
 from PyInstaller.utils.hooks import collect_data_files, collect_submodules
 
-project_root = Path(__file__).resolve().parents[2]
+project_root = Path(SPECPATH).resolve().parents[1]
 datas = collect_data_files("mtg_microsoft_auth")
 hiddenimports = collect_submodules("mtg_microsoft_auth")
 
