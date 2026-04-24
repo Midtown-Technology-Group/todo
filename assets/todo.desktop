@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Todo
+Comment=A command-line app for Microsoft To Do
+Exec=todo
+Icon=todo
+Terminal=true
+Categories=Utility;
+Keywords=todo;microsoft;cli; 

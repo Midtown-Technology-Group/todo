@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "todo"
+version = "0.1.0"
+description = "Windows-first CLI for Microsoft To Do"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [{name = "Thomas Bray", email = "thomas.bray@midtown.net"}]
+dependencies = [
+    "typer>=0.12.0",
+    "rich>=13.0.0",
+    "pydantic>=2.0",
+    "httpx>=0.27.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Midtown-Technology-Group/todo"
+Repository = "https://github.com/Midtown-Technology-Group/todo"
+Issues = "https://github.com/Midtown-Technology-Group/todo/issues"
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "black>=23.0.0", "ruff>=0.1.0"]
+
+[project.scripts]
+todo = "todo_cli.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

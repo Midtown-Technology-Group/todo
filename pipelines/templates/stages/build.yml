@@ -75,9 +75,9 @@ stages:
           /p:DebugType=embedded \
           --self-contained true
         mkdir -p "$(outputDirectory)/usr/share/applications"
-        cp "$(Build.SourcesDirectory)/assets/todo-cli.desktop" "$(outputDirectory)/usr/share/applications/"
+        cp "$(Build.SourcesDirectory)/assets/todo.desktop" "$(outputDirectory)/usr/share/applications/"
         mkdir -p "$(outputDirectory)/usr/share/icons/hicolor/scalable/apps"
-        cp "$(Build.SourcesDirectory)/assets/logo.png" "$(outputDirectory)/usr/share/icons/hicolor/scalable/apps/todo-cli.png"
+        cp "$(Build.SourcesDirectory)/assets/logo.png" "$(outputDirectory)/usr/share/icons/hicolor/scalable/apps/todo.png"
       displayName: 'Publish as Linux executable with desktop integration'
       condition: eq('${{ parameters.runtimeIdentifier }}', 'linux-x64')
 

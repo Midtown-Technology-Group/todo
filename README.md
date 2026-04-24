@@ -1,66 +1,33 @@
-<p align="center">
-    <img 
-        src="./assets/logo.png"
-        width="200"
-        height="200"
-    />
-</p>
+# Todo
 
-# Todo CLI
+Windows-first Python CLI for Microsoft To Do.
 
-A cross-platform command-line interface to interact with Microsoft To Do, built using .NET 8.
+## Setup
 
-## Build Status
-
-| Platform | Status |
-| ------ | ------------ |
-| CI | [![CI build status](https://dev.azure.com/mtseckin/todo-cli/_apis/build/status/CI)](https://dev.azure.com/mtseckin/todo-cli/_build/latest?definitionId=1) |
-| CD | [![Windows (x64) build status](https://dev.azure.com/mtseckin/todo-cli/_apis/build/status/CD)](https://dev.azure.com/mtseckin/todo-cli/_build/latest?definitionId=5)
-
-## Getting Started
-
-### Install
-
-If you just want to give it a spin, head over to [releases](https://github.com/mehmetseckin/todo-cli/releases/). Download a release and extract to somewhere in your `PATH`, and run `todo --help` to get started.
-
-### Build
-
-```
-# Clone the repository
-git clone https://github.com/mehmetseckin/todo-cli.git
-
-# Navigate into the source code folder
-cd .\todo-cli\src
-
-# Build the project
-dotnet build
+```powershell
+py -3 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -e .[dev]
+.\.venv\Scripts\python.exe -m pip install -e ..\midtown-org-scan\microsoft-auth
 ```
 
-### Run
+## Auth
 
-The application will automatically prompt you to sign in with your Microsoft account, and ask for your consent to access your data when needed.
+Set these environment variables before running the CLI:
 
+- `TODO_CLI_CLIENT_ID`
+- `TODO_CLI_TENANT_ID`
+- `TODO_CLI_SCOPES` (optional, defaults to `Tasks.Read`)
+- `TODO_CLI_AUTH_MODE` (optional, defaults to `auto`)
+- `TODO_CLI_ALLOW_BROKER` (optional, defaults to `true`)
+
+`todo` now starts in read-only mode by default. Set `TODO_CLI_SCOPES=Tasks.Read,Tasks.ReadWrite` only when you are ready to grant write access for add/complete/remove flows.
+
+## Usage
+
+```powershell
+.\invoke.ps1 list --all
+.\invoke.ps1 add item "Ship feature" --list Projects --star
+.\invoke.ps1 complete 123
+.\invoke.ps1 remove item --completed --all
 ```
-# Run using dotnet run
-dotnet run -p .\Todo.CLI -- --help
-
-# Run from build output (?)
-.\Todo.CLI\bin\Debug\netcoreapp3.0\todo --help
-```
-
-## Contributing
-
-Interested? You are awesome. Feel free to fork, do your thing and send a PR! Everything is appreciated.
-
-## Code of Conduct
-
-Be nice to people, give constructive feedback, and have fun!
-
-## Stack
-
-This project is built using the following nuggets of awesomeness, and many more. Many thanks to the folks who are working on and maintaining these products.
-
-- [.NET 8](https://github.com/dotnet/core)
-- [System.CommandLine](https://github.com/dotnet/command-line-api)
-- [Microsoft Graph Beta SDK](https://github.com/microsoftgraph/msgraph-beta-sdk-dotnet)
-- [Inquirer.cs](https://github.com/hayer/Inquirer.cs)
