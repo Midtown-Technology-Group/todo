@@ -1,7 +1,7 @@
 from typer.testing import CliRunner
 
-from todo_cli.cli import app
-from todo_cli.models import TodoItem, TodoList
+from todo.main import app
+from todo.models import TodoItem, TodoList
 
 
 class FakeService:
@@ -40,7 +40,7 @@ class FakeService:
 
 
 def test_list_command_supports_json_output(monkeypatch):
-    monkeypatch.setattr("todo_cli.cli.build_service", lambda: FakeService())
+    monkeypatch.setattr("todo.main.build_service", lambda: FakeService())
     runner = CliRunner()
 
     result = runner.invoke(app, ["--output", "json", "list", "--all"])
@@ -52,8 +52,8 @@ def test_list_command_supports_json_output(monkeypatch):
 
 def test_add_list_command_creates_list(monkeypatch):
     service = FakeService()
-    monkeypatch.setattr("todo_cli.cli.build_service", lambda: service)
-    monkeypatch.setattr("todo_cli.cli.has_write_scope", lambda: True)
+    monkeypatch.setattr("todo.main.build_service", lambda: service)
+    monkeypatch.setattr("todo.main.has_write_scope", lambda: True)
     runner = CliRunner()
 
     result = runner.invoke(app, ["add", "list", "Projects"])
@@ -65,8 +65,8 @@ def test_add_list_command_creates_list(monkeypatch):
 
 def test_add_item_command_passes_list_and_star(monkeypatch):
     service = FakeService()
-    monkeypatch.setattr("todo_cli.cli.build_service", lambda: service)
-    monkeypatch.setattr("todo_cli.cli.has_write_scope", lambda: True)
+    monkeypatch.setattr("todo.main.build_service", lambda: service)
+    monkeypatch.setattr("todo.main.has_write_scope", lambda: True)
     runner = CliRunner()
 
     result = runner.invoke(app, ["add", "item", "Ship feature", "--list", "Projects", "--star"])
@@ -76,7 +76,7 @@ def test_add_item_command_passes_list_and_star(monkeypatch):
 
 
 def test_write_commands_explain_read_only_default(monkeypatch):
-    monkeypatch.setattr("todo_cli.cli.has_write_scope", lambda: False)
+    monkeypatch.setattr("todo.main.has_write_scope", lambda: False)
     runner = CliRunner()
 
     result = runner.invoke(app, ["add", "list", "Projects"])

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from todo_cli.models import TodoItem, TodoList
+from todo.models import TodoItem, TodoList
 
 
 class TodoService:
@@ -86,4 +86,3 @@ class TodoService:
         if older_than:
             filtered = [item for item in filtered if item.created and item.created < older_than]
         return filtered
-

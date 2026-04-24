@@ -13,7 +13,7 @@ $TodoSrc = Join-Path $ProjectRoot "src"
 
 if (Test-Path $VenvPython) {
     $env:PYTHONPATH = "$TodoSrc;$SharedSrc;$env:PYTHONPATH"
-    & $VenvPython -m todo_cli.cli @Arguments
+    & $VenvPython -m todo @Arguments
     exit $LASTEXITCODE
 }
 
@@ -27,6 +27,5 @@ if (-not $Python) {
 }
 
 $env:PYTHONPATH = "$TodoSrc;$SharedSrc;$env:PYTHONPATH"
-& $Python -m todo_cli.cli @Arguments
+& $Python -m todo @Arguments
 exit $LASTEXITCODE
-

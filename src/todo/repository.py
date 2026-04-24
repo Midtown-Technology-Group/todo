@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from todo_cli.models import TodoItem, TodoList
+from todo.models import TodoItem, TodoList
 
 
 class TodoRepository:
@@ -87,4 +87,3 @@ class TodoRepository:
             completed=completed.get("dateTime") if isinstance(completed, dict) else None,
             created=created,
         )
-

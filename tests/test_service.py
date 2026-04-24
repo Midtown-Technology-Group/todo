@@ -1,5 +1,5 @@
-from todo_cli.models import TodoItem
-from todo_cli.service import TodoService
+from todo.models import TodoItem
+from todo.service import TodoService
 
 
 class FakeRepository:

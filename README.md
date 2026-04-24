@@ -1,6 +1,6 @@
 # Todo
 
-Windows-first Python CLI for Microsoft To Do.
+Windows-first Python tool for Microsoft To Do.
 
 ## Setup
 
@@ -15,13 +15,13 @@ py -3 -m venv .venv
 
 Set these environment variables before running the CLI:
 
-- `TODO_CLI_CLIENT_ID`
-- `TODO_CLI_TENANT_ID`
-- `TODO_CLI_SCOPES` (optional, defaults to `Tasks.Read`)
-- `TODO_CLI_AUTH_MODE` (optional, defaults to `auto`)
-- `TODO_CLI_ALLOW_BROKER` (optional, defaults to `true`)
+- `TODO_CLIENT_ID`
+- `TODO_TENANT_ID`
+- `TODO_SCOPES` (optional, defaults to `Tasks.Read`)
+- `TODO_AUTH_MODE` (optional, defaults to `auto`)
+- `TODO_ALLOW_BROKER` (optional, defaults to `true`)
 
-`todo` now starts in read-only mode by default. Set `TODO_CLI_SCOPES=Tasks.Read,Tasks.ReadWrite` only when you are ready to grant write access for add/complete/remove flows.
+`todo` now starts in read-only mode by default. Set `TODO_SCOPES=Tasks.Read,Tasks.ReadWrite` only when you are ready to grant write access for add/complete/remove flows.
 
 ## Usage
 

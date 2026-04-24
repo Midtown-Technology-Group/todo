@@ -5,12 +5,12 @@ from datetime import datetime
 import typer
 from mtg_microsoft_auth import GraphAuthSession, GraphClient
 
-from todo_cli.config import has_write_scope, load_auth_config
-from todo_cli.output import OutputRenderer
-from todo_cli.repository import TodoRepository
-from todo_cli.service import TodoService
+from todo.config import has_write_scope, load_auth_config
+from todo.output import OutputRenderer
+from todo.repository import TodoRepository
+from todo.service import TodoService
 
-app = typer.Typer(help="A CLI to manage Microsoft To Do items.")
+app = typer.Typer(help="Manage Microsoft To Do items.")
 add_app = typer.Typer(help="Add a list or item.")
 remove_app = typer.Typer(help="Delete items or lists.")
 app.add_typer(add_app, name="add")
@@ -32,7 +32,7 @@ def _require_write_scope() -> None:
     if has_write_scope():
         return
     raise typer.BadParameter(
-        "This command needs Tasks.ReadWrite. Set TODO_CLI_SCOPES=Tasks.Read,Tasks.ReadWrite "
+        "This command needs Tasks.ReadWrite. Set TODO_SCOPES=Tasks.Read,Tasks.ReadWrite "
         "after you are ready to request elevated consent."
     )
 

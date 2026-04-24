@@ -13,21 +13,21 @@ def _env_bool(name: str, default: bool) -> bool:
 
 
 def load_auth_config() -> AuthConfig:
-    scopes = os.environ.get("TODO_CLI_SCOPES", "Tasks.Read").split(",")
+    scopes = os.environ.get("TODO_SCOPES", "Tasks.Read").split(",")
     return AuthConfig(
-        client_id=os.environ.get("TODO_CLI_CLIENT_ID", "11111111-1111-1111-1111-111111111111"),
-        tenant_id=os.environ.get("TODO_CLI_TENANT_ID", "common"),
+        client_id=os.environ.get("TODO_CLIENT_ID", "11111111-1111-1111-1111-111111111111"),
+        tenant_id=os.environ.get("TODO_TENANT_ID", "common"),
         scopes=[scope.strip() for scope in scopes if scope.strip()],
-        mode=AuthMode(os.environ.get("TODO_CLI_AUTH_MODE", "auto")),
+        mode=AuthMode(os.environ.get("TODO_AUTH_MODE", "auto")),
         cache_namespace="todo",
-        allow_broker=_env_bool("TODO_CLI_ALLOW_BROKER", True),
+        allow_broker=_env_bool("TODO_ALLOW_BROKER", True),
     )
 
 
 def has_write_scope() -> bool:
     scopes = {
         scope.strip()
-        for scope in os.environ.get("TODO_CLI_SCOPES", "Tasks.Read").split(",")
+        for scope in os.environ.get("TODO_SCOPES", "Tasks.Read").split(",")
         if scope.strip()
     }
     return "Tasks.ReadWrite" in scopes
