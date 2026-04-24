@@ -19,10 +19,8 @@ if (Test-Path $buildDir) {
 python -m PyInstaller --clean --noconfirm (Join-Path $root "packaging\windows\todo.spec")
 
 $env:PATH = "$env:USERPROFILE\.dotnet\tools;$env:PATH"
-wix extension add WixToolset.Util.wixext
 wix build `
     (Join-Path $root "packaging\windows\todo.wxs") `
-    -ext WixToolset.Util.wixext `
     -d Version=$Version `
     -d BinDir=$distDir `
     -o (Join-Path $distDir "todo.msi")
