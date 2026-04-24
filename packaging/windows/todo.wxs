@@ -25,7 +25,7 @@
       <Component Id="TodoExecutableComponent" Guid="*">
         <File Id="TodoExecutable" Source="$(var.BinDir)\todo.exe" KeyPath="yes" />
       </Component>
-      <Component Id="PathComponent" Guid="*">
+      <Component Id="PathComponent" Guid="{1D70654E-8F1B-4AC9-8F2F-7EAE8D9E1E1C}">
         <CreateFolder />
         <Environment
           Id="TodoPathEntry"
