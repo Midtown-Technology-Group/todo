@@ -1,0 +1,41 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+  <Package
+    Name="Todo"
+    Manufacturer="Midtown Technology Group LLC"
+    Version="$(var.Version)"
+    UpgradeCode="{B761661F-D640-4A73-8C77-11C8E8E20F40}"
+    InstallerVersion="500"
+    Scope="perMachine">
+
+    <SummaryInformation Description="Todo installer" Manufacturer="Midtown Technology Group LLC" />
+    <MajorUpgrade DowngradeErrorMessage="A newer version of Todo is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLROOT" Name="Midtown Technology Group">
+        <Directory Id="INSTALLFOLDER" Name="Todo" />
+      </Directory>
+    </StandardDirectory>
+
+    <Feature Id="MainFeature" Title="Todo" Level="1">
+      <ComponentGroupRef Id="TodoComponents" />
+    </Feature>
+
+    <ComponentGroup Id="TodoComponents" Directory="INSTALLFOLDER">
+      <Component Id="TodoExecutableComponent" Guid="*">
+        <File Id="TodoExecutable" Source="$(var.BinDir)\todo.exe" KeyPath="yes" />
+      </Component>
+      <Component Id="PathComponent" Guid="*">
+        <CreateFolder />
+        <Environment
+          Id="TodoPathEntry"
+          Action="set"
+          Name="PATH"
+          Part="last"
+          Permanent="no"
+          System="yes"
+          Value="[INSTALLFOLDER]" />
+      </Component>
+    </ComponentGroup>
+  </Package>
+</Wix>
