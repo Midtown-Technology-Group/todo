@@ -10,7 +10,6 @@ Project site: <https://midtown-technology-group.github.io/todo/>
 py -3 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install --upgrade pip
 .\.venv\Scripts\python.exe -m pip install -e .[dev]
-.\.venv\Scripts\python.exe -m pip install -e ..\midtown-org-scan\microsoft-auth
 ```
 
 ## Auth
