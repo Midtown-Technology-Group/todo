@@ -22,7 +22,9 @@ Set these environment variables before running the CLI:
 - `TODO_AUTH_MODE` (optional, defaults to `auto`)
 - `TODO_ALLOW_BROKER` (optional, defaults to `true`)
 
-`todo` now starts in read-only mode by default. Set `TODO_SCOPES=Tasks.Read,Tasks.ReadWrite` only when you are ready to grant write access for add/complete/remove flows.
+`todo` now starts with `Tasks.Read` as its default scope. Set `TODO_SCOPES=Tasks.Read,Tasks.ReadWrite` when you are ready to grant write access for add/complete/remove flows.
+
+`Tasks.ReadWrite` is the single write unlock for this tool. Microsoft currently lists the delegated scope as user-consentable, but tenant policy can still force an approval flow in practice, so treat live consent behavior as the real gate.
 
 ## Usage
 
