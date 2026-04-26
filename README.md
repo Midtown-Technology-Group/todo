@@ -19,8 +19,10 @@ Set these environment variables before running the CLI:
 - `TODO_CLIENT_ID`
 - `TODO_TENANT_ID`
 - `TODO_SCOPES` (optional, defaults to `Tasks.Read`)
-- `TODO_AUTH_MODE` (optional, defaults to `auto`)
+- `TODO_AUTH_MODE` (optional, defaults to `wam`)
 - `TODO_ALLOW_BROKER` (optional, defaults to `true`)
+
+`todo` now shares the Midtown Graph token cache with the other toys by default, so a successful WAM sign-in in one toy should usually carry across the rest. If you ever want an isolated cache for testing, set `MTG_AUTH_CACHE_NAMESPACE` explicitly. If your broker has multiple signed-in Microsoft accounts, set `MTG_AUTH_ACCOUNT_HINT` to the preferred UPN so silent reuse targets the right account before prompting.
 
 `todo` now starts with `Tasks.Read` as its default scope. Set `TODO_SCOPES=Tasks.Read,Tasks.ReadWrite` when you are ready to grant write access for add/complete/remove flows.
 
