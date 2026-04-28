@@ -31,3 +31,17 @@ def test_load_auth_config_rejects_placeholder_client_id(monkeypatch):
 
     with pytest.raises(RuntimeError, match="TODO_CLIENT_ID must be set"):
         load_auth_config()
+
+
+def test_load_auth_config_rejects_whitespace_client_id(monkeypatch):
+    monkeypatch.setenv("TODO_CLIENT_ID", "   ")
+
+    with pytest.raises(RuntimeError, match="TODO_CLIENT_ID must be set"):
+        load_auth_config()
+
+
+def test_load_auth_config_rejects_malformed_client_id(monkeypatch):
+    monkeypatch.setenv("TODO_CLIENT_ID", "not-a-client-id")
+
+    with pytest.raises(RuntimeError, match="TODO_CLIENT_ID must be a valid"):
+        load_auth_config()

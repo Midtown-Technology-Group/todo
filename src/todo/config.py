@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+from uuid import UUID
 
 from mtg_microsoft_auth import AuthConfig, AuthMode
 
@@ -45,4 +46,8 @@ def _required_client_id() -> str:
             "TODO_CLIENT_ID must be set to a real Entra public client application ID or omitted to use the shared Midtown app. "
             "Refusing to use the placeholder client ID."
         )
+    try:
+        UUID(client_id)
+    except ValueError as exc:
+        raise RuntimeError("TODO_CLIENT_ID must be a valid Entra public client application ID UUID.") from exc
     return client_id
