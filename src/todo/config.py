@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import os
+from uuid import UUID
 
 from mtg_microsoft_auth import AuthConfig, AuthMode
 
 DEFAULT_CACHE_NAMESPACE = "mtg-shared-microsoft-auth"
+DEFAULT_CLIENT_ID = "e02be6f7-063a-46a6-b2cc-109d5f51055c"
 PLACEHOLDER_CLIENT_ID = "11111111-1111-1111-1111-111111111111"
 
 
@@ -38,10 +40,14 @@ def has_write_scope() -> bool:
 
 
 def _required_client_id() -> str:
-    client_id = os.environ.get("TODO_CLIENT_ID", "").strip()
+    client_id = os.environ.get("TODO_CLIENT_ID", DEFAULT_CLIENT_ID).strip()
     if not client_id or client_id == PLACEHOLDER_CLIENT_ID:
         raise RuntimeError(
-            "TODO_CLIENT_ID must be set to a real Entra public client application ID. "
+            "TODO_CLIENT_ID must be set to a real Entra public client application ID or omitted to use the shared Midtown app. "
             "Refusing to use the placeholder client ID."
         )
+    try:
+        UUID(client_id)
+    except ValueError as exc:
+        raise RuntimeError("TODO_CLIENT_ID must be a valid Entra public client application ID UUID.") from exc
     return client_id
