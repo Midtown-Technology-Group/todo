@@ -12,8 +12,8 @@ $SharedSrc = $env:MTG_SHARED_AUTH_SRC
 if ([string]::IsNullOrWhiteSpace($SharedSrc)) {
     $SharedSrc = Join-Path (Split-Path -Parent $ProjectRoot) "mtg-microsoft-auth\src"
 }
-if (-not (Test-Path -LiteralPath $SharedSrc)) {
-    Write-Error "Shared auth source not found at '$SharedSrc'. Set MTG_SHARED_AUTH_SRC to the mtg-microsoft-auth src directory."
+if (-not (Test-Path -LiteralPath $SharedSrc -PathType Container)) {
+    Write-Error "Shared auth source directory not found at '$SharedSrc'. Set MTG_SHARED_AUTH_SRC to the mtg-microsoft-auth src directory."
     exit 1
 }
 $SharedSrc = (Resolve-Path -LiteralPath $SharedSrc).Path
