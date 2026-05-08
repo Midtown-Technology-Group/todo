@@ -8,7 +8,15 @@ $ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ProjectRoot = Resolve-Path $ScriptDir
 $VenvPython = Join-Path $ProjectRoot ".venv\Scripts\python.exe"
-$SharedSrc = "C:\Users\ThomasBray\src\Midtown-Technology-Group\mtg-microsoft-auth\src"
+$SharedSrc = $env:MTG_SHARED_AUTH_SRC
+if ([string]::IsNullOrWhiteSpace($SharedSrc)) {
+    $SharedSrc = Join-Path (Split-Path -Parent $ProjectRoot) "mtg-microsoft-auth\src"
+}
+if (-not (Test-Path -LiteralPath $SharedSrc)) {
+    Write-Error "Shared auth source not found at '$SharedSrc'. Set MTG_SHARED_AUTH_SRC to the mtg-microsoft-auth src directory."
+    exit 1
+}
+$SharedSrc = (Resolve-Path -LiteralPath $SharedSrc).Path
 $TodoSrc = Join-Path $ProjectRoot "src"
 
 if (Test-Path $VenvPython) {
