@@ -21,3 +21,20 @@ class TodoList(BaseModel):
     name: str
     tasks: list[TodoItem] = Field(default_factory=list)
 
+
+class PlannerPlan(BaseModel):
+    id: str | None = None
+    title: str
+    owner: str | None = None
+
+
+class PlannerTask(BaseModel):
+    id: str | None = None
+    title: str
+    plan_id: str | None = None
+    plan_title: str | None = None
+    bucket_id: str | None = None
+    percent_complete: int = 0
+    due_at: datetime | None = None
+    created: datetime | None = None
+    completed: datetime | None = None

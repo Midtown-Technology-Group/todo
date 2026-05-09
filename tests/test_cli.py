@@ -1,7 +1,7 @@
 from typer.testing import CliRunner
 
 from todo.main import app
-from todo.models import TodoItem, TodoList
+from todo.models import PlannerPlan, PlannerTask, TodoItem, TodoList
 
 
 class FakeService:
@@ -37,6 +37,19 @@ class FakeService:
 
     def remove_list(self, name: str):
         return True
+
+    def list_planner_plans(self):
+        return [PlannerPlan(id="plan-1", title="Ops")]
+
+    def list_planner_tasks(self, plan_id=None, include_completed=False):
+        return [
+            PlannerTask(
+                id="task-1",
+                title="Review stale queue",
+                plan_id=plan_id or "plan-1",
+                plan_title="Ops",
+            )
+        ]
 
 
 def test_list_command_supports_json_output(monkeypatch):
@@ -84,3 +97,24 @@ def test_write_commands_explain_read_only_default(monkeypatch):
     assert result.exit_code != 0
     combined_output = f"{result.stdout}\n{result.stderr}"
     assert "Tasks.ReadWrite" in combined_output
+
+
+def test_planner_plans_command_supports_json_output(monkeypatch):
+    monkeypatch.setattr("todo.main.build_service", lambda: FakeService())
+    runner = CliRunner()
+
+    result = runner.invoke(app, ["--output", "json", "planner", "plans"])
+
+    assert result.exit_code == 0
+    assert '"title":"Ops"' in result.stdout
+
+
+def test_planner_tasks_command_supports_plan_filter(monkeypatch):
+    monkeypatch.setattr("todo.main.build_service", lambda: FakeService())
+    runner = CliRunner()
+
+    result = runner.invoke(app, ["--output", "json", "planner", "tasks", "--plan-id", "plan-1"])
+
+    assert result.exit_code == 0
+    assert '"title":"Review stale queue"' in result.stdout
+    assert '"plan_id":"plan-1"' in result.stdout

@@ -13,8 +13,10 @@ from todo.service import TodoService
 app = typer.Typer(help="Manage Microsoft To Do items.")
 add_app = typer.Typer(help="Add a list or item.")
 remove_app = typer.Typer(help="Delete items or lists.")
+planner_app = typer.Typer(help="Inspect Microsoft Planner plans and tasks.")
 app.add_typer(add_app, name="add")
 app.add_typer(remove_app, name="remove")
+app.add_typer(planner_app, name="planner")
 
 
 def build_service() -> TodoService:
@@ -127,6 +129,26 @@ def remove_list(ctx: typer.Context, name: str) -> None:
     renderer = _renderer(ctx.obj["output"])
     service.remove_list(name)
     renderer.success(f"List '{name}' removed successfully.")
+
+
+@planner_app.command("plans")
+def list_planner_plans(ctx: typer.Context) -> None:
+    service = build_service()
+    renderer = _renderer(ctx.obj["output"])
+    renderer.render_planner_plans(service.list_planner_plans())
+
+
+@planner_app.command("tasks")
+def list_planner_tasks(
+    ctx: typer.Context,
+    plan_id: str | None = typer.Option(None, "--plan-id"),
+    all_items: bool = typer.Option(False, "--all", "-a"),
+) -> None:
+    service = build_service()
+    renderer = _renderer(ctx.obj["output"])
+    renderer.render_planner_tasks(
+        service.list_planner_tasks(plan_id=plan_id, include_completed=all_items)
+    )
 
 
 def main() -> None:
