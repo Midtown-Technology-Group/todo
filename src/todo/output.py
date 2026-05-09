@@ -19,6 +19,23 @@ class OutputRenderer:
             suffix = " [yellow]*[/yellow]" if item.is_important else ""
             self.console.print(f"{bullet} {item.subject}{suffix}")
 
+    def render_planner_plans(self, plans) -> None:
+        if self.mode == "json":
+            self.console.file.write(json.dumps([plan.model_dump(mode="json") for plan in plans], separators=(",", ":")) + "\n")
+            return
+        for plan in plans:
+            self.console.print(f"- {plan.title} ({plan.id})")
+
+    def render_planner_tasks(self, tasks) -> None:
+        if self.mode == "json":
+            self.console.file.write(json.dumps([task.model_dump(mode="json") for task in tasks], separators=(",", ":")) + "\n")
+            return
+        for task in tasks:
+            status = "[green]✓[/green]" if task.percent_complete >= 100 else "-"
+            plan = f" [{task.plan_title}]" if task.plan_title else ""
+            due = f" due {task.due_at.date()}" if task.due_at else ""
+            self.console.print(f"{status} {task.title}{plan}{due}")
+
     def success(self, message: str) -> None:
         if self.mode == "json":
             self.console.file.write(json.dumps({"status": "ok", "message": message}, separators=(",", ":")) + "\n")

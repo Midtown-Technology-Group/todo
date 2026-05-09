@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from todo.models import TodoItem, TodoList
+from todo.models import PlannerPlan, PlannerTask, TodoItem, TodoList
 
 
 class TodoRepository:
@@ -55,6 +55,37 @@ class TodoRepository:
         self.graph_client.delete(f"/me/todo/lists/{list_id}")
         return True
 
+    def list_planner_plans(self) -> list[PlannerPlan]:
+        payload = self.graph_client.get_all("/me/planner/plans")
+        return [
+            PlannerPlan(
+                id=raw.get("id"),
+                title=raw.get("title", ""),
+                owner=raw.get("owner"),
+            )
+            for raw in payload.get("value", [])
+        ]
+
+    def list_planner_tasks(
+        self,
+        plan_id: str | None = None,
+        include_completed: bool = False,
+    ) -> list[PlannerTask]:
+        plans = self.list_planner_plans()
+        plan_titles = {plan.id: plan.title for plan in plans}
+        target_plans = [plan for plan in plans if plan_id is None or plan.id == plan_id]
+        if plan_id and not target_plans:
+            raise ValueError(f"No Planner plan found with id '{plan_id}'.")
+
+        tasks: list[PlannerTask] = []
+        for plan in target_plans:
+            payload = self.graph_client.get_all(f"/planner/plans/{plan.id}/tasks")
+            for raw in payload.get("value", []):
+                task = self._map_planner_task(raw, plan_titles.get(plan.id))
+                if include_completed or task.percent_complete < 100:
+                    tasks.append(task)
+        return tasks
+
     def _resolve_list_id(self, list_name: str | None) -> str:
         lists = self.list_lists()
         if list_name:
@@ -86,4 +117,21 @@ class TodoRepository:
             status=status,
             completed=completed.get("dateTime") if isinstance(completed, dict) else None,
             created=created,
+        )
+
+    @staticmethod
+    def _map_planner_task(raw: dict, plan_title: str | None = None) -> PlannerTask:
+        completed = raw.get("completedDateTime")
+        created = raw.get("createdDateTime")
+        due = raw.get("dueDateTime")
+        return PlannerTask(
+            id=raw.get("id"),
+            title=raw.get("title", ""),
+            plan_id=raw.get("planId"),
+            plan_title=plan_title,
+            bucket_id=raw.get("bucketId"),
+            percent_complete=raw.get("percentComplete") or 0,
+            due_at=due,
+            created=created,
+            completed=completed,
         )

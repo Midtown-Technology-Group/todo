@@ -32,10 +32,16 @@ Set these environment variables before running the CLI:
 
 ```powershell
 .\invoke.ps1 list --all
+.\invoke.ps1 planner plans
+.\invoke.ps1 planner tasks --plan-id <planner-plan-id>
 .\invoke.ps1 add item "Ship feature" --list Projects --star
 .\invoke.ps1 complete 123
 .\invoke.ps1 remove item --completed --all
 ```
+
+Planner commands are read-only and use the same `TODO_SCOPES=Tasks.Read`
+baseline as personal To Do reads. They intentionally live under `planner` so
+project tasks do not masquerade as personal To Do items.
 
 ## License
 

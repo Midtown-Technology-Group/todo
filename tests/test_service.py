@@ -1,4 +1,4 @@
-from todo.models import TodoItem
+from todo.models import PlannerPlan, PlannerTask, TodoItem
 from todo.service import TodoService
 
 
@@ -35,6 +35,19 @@ class FakeRepository:
     def remove_list(self, name):
         return True
 
+    def list_planner_plans(self):
+        return [PlannerPlan(id="plan-1", title="Ops")]
+
+    def list_planner_tasks(self, plan_id=None, include_completed=False):
+        return [
+            PlannerTask(
+                id="task-1",
+                title="Review stale queue",
+                plan_id=plan_id or "plan-1",
+                percent_complete=100 if include_completed else 0,
+            )
+        ]
+
 
 def test_complete_items_filters_by_id():
     repo = FakeRepository()
@@ -54,3 +67,13 @@ def test_remove_items_can_limit_to_completed():
 
     assert count == 1
     assert repo.removed == ["2"]
+
+
+def test_list_planner_tasks_delegates_to_repository():
+    repo = FakeRepository()
+    service = TodoService(repo)
+
+    tasks = service.list_planner_tasks(plan_id="plan-1")
+
+    assert tasks[0].title == "Review stale queue"
+    assert tasks[0].plan_id == "plan-1"

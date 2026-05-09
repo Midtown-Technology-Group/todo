@@ -78,6 +78,19 @@ class TodoService:
     def remove_list(self, name: str) -> bool:
         return self.repository.remove_list(name)
 
+    def list_planner_plans(self):
+        return self.repository.list_planner_plans()
+
+    def list_planner_tasks(
+        self,
+        plan_id: str | None = None,
+        include_completed: bool = False,
+    ):
+        return self.repository.list_planner_tasks(
+            plan_id=plan_id,
+            include_completed=include_completed,
+        )
+
     @staticmethod
     def _filter_items(items: list[TodoItem], ids: list[str] | None = None, older_than: datetime | None = None) -> list[TodoItem]:
         filtered = items
