@@ -14,6 +14,22 @@ class TodoItem(BaseModel):
     status: str = "notStarted"
     completed: datetime | None = None
     created: datetime | None = None
+    due_at: datetime | None = None
+    due_time_zone: str | None = None
+    reminder_at: datetime | None = None
+    reminder_time_zone: str | None = None
+    is_reminder_on: bool = False
+    body_content: str | None = None
+    body_content_type: str | None = None
+    recurrence: dict | None = None
+    has_attachments: bool = False
+
+
+class TodoAttachment(BaseModel):
+    id: str | None = None
+    name: str
+    content_type: str | None = None
+    size: int | None = None
 
 
 class TodoList(BaseModel):

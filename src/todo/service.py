@@ -1,8 +1,13 @@
 from __future__ import annotations
 
-from datetime import datetime
+import base64
+import mimetypes
+from datetime import date, datetime
+from pathlib import Path
 
-from todo.models import TodoItem, TodoList
+from todo.models import TodoAttachment, TodoItem, TodoList
+
+MAX_SIMPLE_ATTACHMENT_BYTES = 3 * 1024 * 1024
 
 
 class TodoService:
@@ -28,12 +33,63 @@ class TodoService:
         raw = self.repository.add_list(name)
         return TodoList(id=raw.get("id"), name=raw.get("displayName", name))
 
-    def add_item(self, subject: str, list_name: str | None, star: bool) -> TodoItem:
-        raw = self.repository.add_item(subject, list_name=list_name, star=star)
-        return TodoItem(
-            id=raw.get("id"),
-            subject=raw.get("title", subject),
-            is_important=raw.get("importance") == "high",
+    def add_item(
+        self,
+        subject: str,
+        list_name: str | None,
+        star: bool,
+        due: date | None = None,
+        remind: datetime | None = None,
+        note: str | None = None,
+        repeat: str | None = None,
+        time_zone: str = "UTC",
+    ) -> TodoItem:
+        return self.repository.add_item(
+            subject,
+            list_name=list_name,
+            star=star,
+            due=due,
+            remind=remind,
+            note=note,
+            repeat=repeat,
+            time_zone=time_zone,
+        )
+
+    def update_item(
+        self,
+        item_id: str,
+        due: date | None = None,
+        remind: datetime | None = None,
+        note: str | None = None,
+        repeat: str | None = None,
+        time_zone: str = "UTC",
+    ) -> TodoItem:
+        return self.repository.update_item(
+            item_id,
+            due=due,
+            remind=remind,
+            note=note,
+            repeat=repeat,
+            time_zone=time_zone,
+        )
+
+    def attach_file(self, item_id: str, file_path: Path) -> TodoAttachment:
+        if not file_path.is_file():
+            raise ValueError(f"Attachment file not found: {file_path}")
+        size = file_path.stat().st_size
+        if size >= MAX_SIMPLE_ATTACHMENT_BYTES:
+            raise ValueError(
+                "Attachments must be under 3 MB. Graph upload sessions for larger files "
+                "are not supported by this CLI yet."
+            )
+        content_type = mimetypes.guess_type(file_path.name)[0] or "application/octet-stream"
+        content_bytes = base64.b64encode(file_path.read_bytes()).decode("ascii")
+        return self.repository.attach_file(
+            item_id,
+            name=file_path.name,
+            content_type=content_type,
+            content_bytes=content_bytes,
+            size=size,
         )
 
     def complete_items(
