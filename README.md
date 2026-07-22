@@ -35,9 +35,30 @@ Set these environment variables before running the CLI:
 .\invoke.ps1 planner plans
 .\invoke.ps1 planner tasks --plan-id <planner-plan-id>
 .\invoke.ps1 add item "Ship feature" --list Projects --star
+.\invoke.ps1 add item "Renew pass GPG key/subkeys" --star --due 2027-01-15 --remind 2027-01-15T09:00:00 --note "Verify key fingerprint" --repeat yearly --time-zone "Eastern Standard Time"
+.\invoke.ps1 update item <item-id> --due 2027-01-15 --note "Updated context"
+.\invoke.ps1 attach file <item-id> .\evidence.pdf
 .\invoke.ps1 complete 123
 .\invoke.ps1 remove item --completed --all
 ```
+
+Task creation and updates support due dates, reminders, plain-text notes, and
+`daily`, `weekly`, `monthly`, or `yearly` recurrence. Recurrence needs a due
+date when creating a task; updates can reuse the task's existing due date.
+`--time-zone` accepts the Graph/Windows time-zone name and defaults to `UTC`.
+
+The `attach file` command uses the Microsoft Graph v1.0 small-attachment API
+and accepts files under 3 MB. Larger Graph upload sessions are not implemented
+yet, and the CLI reports that limit without uploading the file.
+
+Microsoft Graph v1.0 does not expose My Day membership for Microsoft To Do
+tasks. `--my-day` and `--no-my-day` therefore fail clearly before creating or
+updating a task; use a Microsoft To Do client to change My Day membership.
+
+With `--output json`, list results include due, reminder, note/body, recurrence,
+and attachment-presence fields. Successful add, update, and attachment commands
+retain the existing `status` and `message` keys and add the created or updated
+resource under `data` for scripts.
 
 Planner commands are read-only and use the same `TODO_SCOPES=Tasks.Read`
 baseline as personal To Do reads. They intentionally live under `planner` so

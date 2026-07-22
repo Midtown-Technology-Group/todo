@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from todo.models import PlannerPlan, PlannerTask, TodoItem, TodoList
+from datetime import date, datetime, time, timezone
+from html import escape
+
+from todo.models import PlannerPlan, PlannerTask, TodoAttachment, TodoItem, TodoList
 
 
 class TodoRepository:
@@ -29,14 +32,87 @@ class TodoRepository:
     def add_list(self, name: str):
         return self.graph_client.post("/me/todo/lists", {"displayName": name})
 
-    def add_item(self, subject: str, list_name: str | None = None, star: bool = False):
+    def add_item(
+        self,
+        subject: str,
+        list_name: str | None = None,
+        star: bool = False,
+        due: date | None = None,
+        remind: datetime | None = None,
+        note: str | None = None,
+        repeat: str | None = None,
+        time_zone: str = "UTC",
+    ) -> TodoItem:
         list_id = self._resolve_list_id(list_name)
-        return self.graph_client.post(
+        payload = {
+            "title": subject,
+            "importance": "high" if star else "normal",
+        }
+        payload.update(
+            self._task_field_payload(
+                due=due,
+                remind=remind,
+                note=note,
+                repeat=repeat,
+                time_zone=time_zone,
+            )
+        )
+        raw = self.graph_client.post(
             f"/me/todo/lists/{list_id}/tasks",
+            payload,
+        )
+        return self._map_item(raw, list_id)
+
+    def update_item(
+        self,
+        item_id: str,
+        due: date | None = None,
+        remind: datetime | None = None,
+        note: str | None = None,
+        repeat: str | None = None,
+        time_zone: str = "UTC",
+    ) -> TodoItem:
+        item = self._resolve_item(item_id)
+        payload = self._task_field_payload(
+            due=due,
+            remind=remind,
+            note=note,
+            repeat=repeat,
+            time_zone=time_zone,
+            existing_due=item.due_at,
+        )
+        if not payload:
+            raise ValueError("Set at least one of --due, --remind, --note, or --repeat.")
+        raw = self.graph_client.patch(
+            f"/me/todo/lists/{item.list_id}/tasks/{item_id}",
+            payload,
+        )
+        return self._map_item(raw, item.list_id)
+
+    def attach_file(
+        self,
+        item_id: str,
+        name: str,
+        content_type: str,
+        content_bytes: str,
+        size: int,
+    ) -> TodoAttachment:
+        item = self._resolve_item(item_id)
+        raw = self.graph_client.post(
+            f"/me/todo/lists/{item.list_id}/tasks/{item_id}/attachments",
             {
-                "title": subject,
-                "importance": "high" if star else "normal",
+                "@odata.type": "#microsoft.graph.taskFileAttachment",
+                "name": name,
+                "contentType": content_type,
+                "contentBytes": content_bytes,
+                "size": size,
             },
+        )
+        return TodoAttachment(
+            id=raw.get("id"),
+            name=raw.get("name", name),
+            content_type=raw.get("contentType", content_type),
+            size=raw.get("size", size),
         )
 
     def complete_item(self, item_id: str) -> None:
@@ -103,11 +179,93 @@ class TodoRepository:
                 return item
         raise ValueError(f"No item found with id '{item_id}'.")
 
+    @classmethod
+    def _task_field_payload(
+        cls,
+        due: date | None = None,
+        remind: datetime | None = None,
+        note: str | None = None,
+        repeat: str | None = None,
+        time_zone: str = "UTC",
+        existing_due: datetime | None = None,
+    ) -> dict:
+        payload: dict = {}
+        if due is not None:
+            payload["dueDateTime"] = cls._date_time_time_zone(due, time_zone)
+        if remind is not None:
+            payload["isReminderOn"] = True
+            payload["reminderDateTime"] = cls._date_time_time_zone(remind, time_zone)
+        if note is not None:
+            payload["body"] = {
+                "content": escape(note).replace("\n", "<br>"),
+                "contentType": "html",
+            }
+        if repeat is not None:
+            recurrence_start = due or (existing_due.date() if existing_due else None)
+            if recurrence_start is None:
+                raise ValueError("--repeat requires --due or an existing task due date.")
+            if isinstance(recurrence_start, datetime):
+                recurrence_start = recurrence_start.date()
+            payload["recurrence"] = cls._recurrence(repeat, recurrence_start)
+        return payload
+
+    @staticmethod
+    def _date_time_time_zone(value: date | datetime, time_zone: str) -> dict[str, str]:
+        if not time_zone.strip():
+            raise ValueError("--time-zone cannot be empty.")
+        if isinstance(value, datetime):
+            date_time = value
+        else:
+            date_time = datetime.combine(value, time.min)
+        target_time_zone = time_zone
+        if date_time.tzinfo is not None:
+            date_time = date_time.astimezone(timezone.utc).replace(tzinfo=None)
+            target_time_zone = "UTC"
+        return {
+            "dateTime": date_time.isoformat(timespec="seconds"),
+            "timeZone": target_time_zone,
+        }
+
+    @staticmethod
+    def _recurrence(frequency: str, start_date: date) -> dict:
+        normalized = frequency.lower()
+        if normalized == "daily":
+            pattern = {"type": "daily", "interval": 1}
+        elif normalized == "weekly":
+            pattern = {
+                "type": "weekly",
+                "interval": 1,
+                "daysOfWeek": [start_date.strftime("%A").lower()],
+                "firstDayOfWeek": "monday",
+            }
+        elif normalized == "monthly":
+            pattern = {
+                "type": "absoluteMonthly",
+                "interval": 1,
+                "dayOfMonth": start_date.day,
+            }
+        elif normalized == "yearly":
+            pattern = {
+                "type": "absoluteYearly",
+                "interval": 1,
+                "dayOfMonth": start_date.day,
+                "month": start_date.month,
+            }
+        else:
+            raise ValueError("--repeat must be daily, weekly, monthly, or yearly.")
+        return {
+            "pattern": pattern,
+            "range": {"type": "noEnd", "startDate": start_date.isoformat()},
+        }
+
     @staticmethod
     def _map_item(raw: dict, list_id: str | None) -> TodoItem:
         status = raw.get("status", "notStarted")
         completed = raw.get("completedDateTime", {})
         created = raw.get("createdDateTime")
+        due = raw.get("dueDateTime") or {}
+        reminder = raw.get("reminderDateTime") or {}
+        body = raw.get("body") or {}
         return TodoItem(
             id=raw.get("id"),
             subject=raw.get("title", ""),
@@ -117,6 +275,15 @@ class TodoRepository:
             status=status,
             completed=completed.get("dateTime") if isinstance(completed, dict) else None,
             created=created,
+            due_at=due.get("dateTime") if isinstance(due, dict) else None,
+            due_time_zone=due.get("timeZone") if isinstance(due, dict) else None,
+            reminder_at=reminder.get("dateTime") if isinstance(reminder, dict) else None,
+            reminder_time_zone=reminder.get("timeZone") if isinstance(reminder, dict) else None,
+            is_reminder_on=raw.get("isReminderOn", False),
+            body_content=body.get("content") if isinstance(body, dict) else None,
+            body_content_type=body.get("contentType") if isinstance(body, dict) else None,
+            recurrence=raw.get("recurrence"),
+            has_attachments=raw.get("hasAttachments", False),
         )
 
     @staticmethod

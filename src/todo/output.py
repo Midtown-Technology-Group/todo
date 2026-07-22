@@ -36,8 +36,11 @@ class OutputRenderer:
             due = f" due {task.due_at.date()}" if task.due_at else ""
             self.console.print(f"{status} {task.title}{plan}{due}")
 
-    def success(self, message: str) -> None:
+    def success(self, message: str, data=None) -> None:
         if self.mode == "json":
-            self.console.file.write(json.dumps({"status": "ok", "message": message}, separators=(",", ":")) + "\n")
+            payload = {"status": "ok", "message": message}
+            if data is not None:
+                payload["data"] = data.model_dump(mode="json")
+            self.console.file.write(json.dumps(payload, separators=(",", ":")) + "\n")
             return
         self.console.print(f"[green]{message}[/green]")
