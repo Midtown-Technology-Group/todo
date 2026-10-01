@@ -4,7 +4,7 @@ This Windows-first Python CLI manages personal Microsoft To Do tasks and reads P
 
 ## Setup and checks
 
-Follow the README's virtual environment setup, then install `-e .[dev]` using that environment's Python. The project declares pytest and selects `tests/`; run that suite with the environment's Python (`python -m pytest`) after relevant code changes. Keep authentication mocked for ordinary tests rather than using personal accounts.
+Follow the README's virtual environment setup, then install `-e .[dev]` using that environment's Python. The project declares pytest and selects `tests/`; run that suite with the environment's Python (`.\.venv\Scripts\python.exe -m pytest`) after relevant code changes. Keep authentication mocked for ordinary tests rather than using personal accounts.
 
 ## Authentication and operation boundaries
 
